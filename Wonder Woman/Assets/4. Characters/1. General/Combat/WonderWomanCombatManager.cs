@@ -23,7 +23,7 @@ namespace LupiLab.Character
         private BlockingCombatState _blockingState;
         private MeleeAttackCombatState _meleeAttackingState;
         private WeaponSwitchingState _weaponSwitchingState;
-        private RecoilingState _recoilingState;
+        private StaggerState _staggerState;
 
         public bool CanStartFlying
         {
@@ -49,6 +49,13 @@ namespace LupiLab.Character
         public override void UpdateTick()
         {
             _input.UpdateTick();
+
+            //Debug:
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                TryStartStaggering();
+            }
+
         }
 
         public override void FixedUpdateTick()
@@ -75,10 +82,12 @@ namespace LupiLab.Character
             _blockingState = new BlockingCombatState(animator: animator, blockingCharacterDamageable: blockingCharacterDamageable);
             _meleeAttackingState = new MeleeAttackCombatState(animator: animator);
             _weaponSwitchingState = new WeaponSwitchingState(animator: animator);
+            _staggerState = new StaggerState(animator: animator);
 
             _stateMachine.AddTransition(_nullState, _blockingState, HasBlockInput());
             //_stateMachine.AddTransition(_nullState, _meleeAttackingState, HasAttackInput());
             _input.AttackInputEvent += TryStartAttacking;
+
             _stateMachine.AddTransition(_nullState, _weaponSwitchingState, HasSwitchWeaponsInput());
 
             _stateMachine.AddTransition(_blockingState, _nullState, HasNoBlockInput());
@@ -86,6 +95,8 @@ namespace LupiLab.Character
             _stateMachine.AddTransition(_meleeAttackingState, _nullState, HasFinishedAttacking());
 
             _stateMachine.AddTransition(_weaponSwitchingState, _nullState, HasFinishedSwitchingWeapons());
+
+            _staggerState.StaggerFinishedEvent += OnStaggerFinished;
 
             _stateMachine.SetState(_nullState);
 
@@ -101,6 +112,8 @@ namespace LupiLab.Character
         private Func<bool> HasSwitchWeaponsInput() => () => _heldItemsManager.TargetItemSetIndex != _heldItemsManager.CurrentItemSetIndex;
         private Func<bool> HasFinishedSwitchingWeapons() => () => _weaponSwitchingState.HasFinishedSwitching;
 
+        
+
         private void TryStartAttacking()
         {
             if(CanStartAttacking)
@@ -108,7 +121,6 @@ namespace LupiLab.Character
                 _stateMachine.SetState(_meleeAttackingState);
             }
         }
-        #endregion
 
         private bool CanStartAttacking
         {
@@ -129,6 +141,20 @@ namespace LupiLab.Character
                 return true;
             }
         }
+
+        public void TryStartStaggering()
+        {
+            _stateMachine.SetState(_staggerState);
+        }
+
+        public void OnStaggerFinished()
+        {
+            _stateMachine.SetState(_nullState);
+        }
+
+        #endregion
+
+
 
 
         private void SetUpAnimationEventReceiver()
@@ -153,5 +179,10 @@ namespace LupiLab.Character
             _heldItemsManager.Initialize();
         }
 
+
+        private void OnGUI()
+        {
+            GUILayout.Label($"Combat State: {_stateMachine.CurrentState}");
+        }
     }
 }

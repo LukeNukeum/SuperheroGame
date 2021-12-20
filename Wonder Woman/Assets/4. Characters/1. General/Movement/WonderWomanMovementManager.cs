@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using LupiLab.Camera;
 using LupiLab.Character.Motion;
