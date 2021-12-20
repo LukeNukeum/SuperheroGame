@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4412cb856c40c904890f6e8b6d92462e, type: 3}
+  m_Name: Player Character Interactable Finder
+  m_EditorClassIdentifier: 
+  _targetableList: {fileID: 11400000, guid: 35df47d3c29028440bc9134267cfdb31, type: 2}
+  _maxRadius: 2
+  _maxVerticalSeparation: 1
+  _doesExcludeSelf: 1
+  _targetFactions:
+  - {fileID: 11400000, guid: 4379b366e89e1a3439a79a7f3d5b5c6e, type: 2}
+  _doRaycast: 1
+  _raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
